@@ -18,17 +18,8 @@ SCOPES = [
 # The header row — this defines your columns.
 # Order matters: this is the exact order rows will be appended in.
 HEADERS = [
-    "Date",           # 2025-01-15
-    "Time",           # 14:32
-    "Person",         # Hans
-    "Merchant",       # McDonald's
-    "Description",    # mcdonalds
-    "Amount",         # 12.54
-    "Category",       # Food & Dining
-    "Subcategory",    # Fast Food
-    "Notes",          # Likely lunch expense
-    "Discord User",   # hans#1234
-    "Raw Message",    # Hans; mcdonalds; 12.54
+    "Date", "Time", "Person", "Merchant", "Description",
+    "Amount", "Card", "Category", "Subcategory", "Notes", "Discord User", "Raw Message",
 ]
 
 
@@ -80,17 +71,9 @@ def append_expense(expense: Any) -> int:
     time_str = dt.strftime("%H:%M")      # e.g. 14:32
     
     row = [
-        date_str,
-        time_str,
-        expense.person,
-        expense.merchant,
-        expense.description,
-        expense.amount,        # Keep as number — Sheets will treat it as numeric
-        expense.category,
-        expense.subcategory,
-        expense.notes,
-        expense.discord_user,
-        expense.raw_message,
+        date_str, time_str, expense.person, expense.merchant, expense.description,
+        expense.amount, expense.card, expense.category, expense.subcategory, expense.notes,
+        expense.discord_user, expense.raw_message,
     ]
     
     sheet.append_row(row, value_input_option="USER_ENTERED")

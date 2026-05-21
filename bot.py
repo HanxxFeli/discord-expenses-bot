@@ -57,18 +57,15 @@ async def on_message(message: discord.Message) -> None:
         # Not an expense message — could be a question or comment.
         # Only reply if the message looks like it was TRYING to be an expense.
         if ";" in content:
-            parts = content.split(";")
-            # Check if the error is specifically a bad person name
-            from parser import get_person_error
-            person_error = get_person_error(parts[0]) if len(parts) >= 1 else None
-            
-            if person_error:
-                await message.reply(person_error)
+            from parser import get_parse_error
+            error = get_parse_error(content)
+            if error:
+                await message.reply(error)
             else:
                 await message.reply(
-                    "⚠️ Couldn't parse that. Format: `Person; description; amount`\n"
-                    "Valid persons: `Hans`, `Hyemin`, `Both`\n"
-                    "Example: `Hans; mcdonalds; 12.54`"
+                    "⚠️ Couldn't parse that. Format: `Person; description; amount; card`\n"
+                    "Valid cards: `rbc`, `cibc`, `scotia`\n"
+                    "Example: `Hans; mcdonalds; 12.54; rbc`"
                 )
         return
     
@@ -84,6 +81,7 @@ async def on_message(message: discord.Message) -> None:
             person=raw.person,
             description=raw.description,
             amount=raw.amount,
+            card=raw.card,
             timestamp=timestamp,
             discord_user=raw.discord_user,
             raw_message=raw.raw_message,
