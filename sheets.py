@@ -1,4 +1,5 @@
 import os
+import json
 from typing import Any
 
 import gspread
@@ -32,13 +33,16 @@ HEADERS = [
 
 
 def get_sheet() -> gspread.Worksheet:
-    """
-    Authenticate and return the first worksheet of the target spreadsheet.
+    credentials_json = os.getenv("GOOGLE_CREDENTIALS_JSON")
     
-    We create a new client each call to keep this module stateless.
-    For a high-volume app you'd cache this, but for expense tracking it's fine.
-    """
-    creds = Credentials.from_service_account_file("credentials.json", scopes=SCOPES)
+    if credentials_json:
+        # Running on Railway — load from environment variable
+        creds_dict = json.loads(credentials_json)
+        creds = Credentials.from_service_account_info(creds_dict, scopes=SCOPES)
+    else:
+        # Running locally — load from file
+        creds = Credentials.from_service_account_file("credentials.json", scopes=SCOPES)
+    
     client = gspread.authorize(creds)
     spreadsheet = client.open_by_key(os.getenv("SPREADSHEET_ID"))
     return spreadsheet.sheet1
