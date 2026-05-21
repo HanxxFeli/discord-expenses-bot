@@ -53,6 +53,7 @@ def classify_expense(
     timestamp: str,
     discord_user: str,
     raw_message: str,
+    user_note: str = "",
 ) -> ClassifiedExpense:
     """
     Use Gemini to classify an expense and return enriched data.
@@ -67,6 +68,7 @@ Expense details:
 - Person: {person}
 - Description: "{description}"
 - Amount: ${amount:.2f}
+- User note: "{user_note}"
 
 Classify into one of these exact categories: {", ".join(CATEGORIES)}
 

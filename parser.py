@@ -15,31 +15,23 @@ class RawExpense:
     timestamp: datetime
     raw_message: str
     discord_user: str
+    user_note: str = ""  # default empty so old code doesn't break
 
 
 def parse_expense_message(message_content: str, author_name: str) -> RawExpense | None:
-    """
-    Parse a Discord message into a RawExpense.
-    
-    Expected format: "Person; description; amount"
-    Valid persons: Hans, Hyemin, Both
-    Example: "Hans; mcdonalds; 12.54"
-    
-    Returns None if the message doesn't match the expected format.
-    """
     parts = [p.strip() for p in message_content.split(";")]
     
-    if len(parts) != 3:
+    # Accept 3 parts (no note) or 4 parts (with note)
+    if len(parts) not in (3, 4):
         return None
     
-    person_raw, description, amount_str = parts
+    person_raw = parts[0]
+    description = parts[1]
+    amount_str = parts[2]
+    user_note = parts[3] if len(parts) == 4 else ""  # optional
     
-    # Normalise capitalisation so "hans" and "HANS" both work
     person = person_raw.title()
-    
     if person not in VALID_PERSONS:
-        # Return a special sentinel so bot.py can give a helpful error message
-        # rather than silently ignoring the message
         return None
     
     try:
@@ -57,6 +49,7 @@ def parse_expense_message(message_content: str, author_name: str) -> RawExpense 
         timestamp=datetime.now(),
         raw_message=message_content,
         discord_user=author_name,
+        user_note=user_note,  # new field
     )
 
 

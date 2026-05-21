@@ -87,6 +87,7 @@ async def on_message(message: discord.Message) -> None:
             timestamp=timestamp,
             discord_user=raw.discord_user,
             raw_message=raw.raw_message,
+            user_note=raw.user_note,
         )
         
         # Step 2: Log to Google Sheets
